@@ -1,7 +1,7 @@
 # Deployed Apps
 
-Deployed website V1 here: https://legendary-zabaione-bc94d6.netlify.app/
-Deployed website V2 here: https://legendary-zabaione-bc94d6.netlify.app/
+1. Deployed website V1 here: [https://legendary-zabaione-bc94d6.netlify.app/](https://legendary-zabaione-bc94d6.netlify.app/)
+2. Deployed website V2 here: [https://gleaming-granita-de0a5b.netlify.app/](https://gleaming-granita-de0a5b.netlify.app/)
 
 # Getting Started with Create React App
 
