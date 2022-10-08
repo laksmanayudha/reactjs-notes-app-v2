@@ -1,11 +1,14 @@
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getActiveNotes, searchNote } from "../utils/local-data";
+import { getActiveNotes, searchNote } from "../utils/network-data";
 import Button from "../components/Button/Button";
 import NotesList from "../components/NotesList/NotesList";
 import SearchBar from "../components/SearchBar/SearchBar";
 import PropTypes from "prop-types";
 import { routes } from ".";
+import content from "../utils/content";
+import LocaleContext from "../contexts/LocaleContext";
+import Loading from "../components/Loading/Loading";
 
 function HomePageWrapper() {
     const navigate = useNavigate();
@@ -29,11 +32,31 @@ class HomePage extends React.Component {
 
         this.state = {
             keyword: props.keyword || "",
-            notes: getActiveNotes()
+            notes: [],
+            initializing: true
         };
 
         this.goToCreate = this.goToCreate.bind(this);
         this.onSearch = this.onSearch.bind(this);
+    }
+
+    async componentDidMount() {
+        const { error, data } = await getActiveNotes();
+
+        if (!error) {
+            this.setState(() => {
+                return {
+                    notes: data,
+                    initializing: false
+                };
+            });
+        }
+
+        this.setState(() => {
+            return {
+                initializing: false
+            }
+        });
     }
 
     goToCreate() {
@@ -55,16 +78,26 @@ class HomePage extends React.Component {
         newNotes = searchNote(newNotes, this.state.keyword);
 
         return (
-            <section className="homepage">
-                <SearchBar onSearch={this.onSearch} defaultKeyword={this.state.keyword} />
-                
-                <h2>Catatan Aktif</h2>
-                <NotesList notes={newNotes} />
-                
-                <div className="homepage__action">
-                    <Button iconName="add" action={this.goToCreate} />
-                </div>
-            </section>
+            <LocaleContext.Consumer>
+                {
+                    ({ locale }) => (
+                        <section className="homepage">
+                            <SearchBar onSearch={this.onSearch} defaultKeyword={this.state.keyword} />
+                            
+                            <h2>{ content[locale].homePage.noteTitle }</h2>
+                            {
+                                this.state.initializing 
+                                ? <Loading message={content[locale].homePage.loading} />
+                                : <NotesList notes={newNotes} />
+                            }
+                            
+                            <div className="homepage__action">
+                                <Button iconName="add" action={this.goToCreate} />
+                            </div>
+                        </section>
+                    )
+                }
+            </LocaleContext.Consumer>
         );
     }
 }

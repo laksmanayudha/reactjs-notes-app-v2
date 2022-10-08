@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import content from "../../utils/content";
+import LocaleContext from "../../contexts/LocaleContext";
 
 class SearchBar extends React.Component {
 
@@ -24,9 +26,15 @@ class SearchBar extends React.Component {
 
     render() {
         return (
-            <section className="search-bar">
-                <input type="text" placeholder="search..." onChange={this.onKeywordChange} value={this.state.keyword} />
-            </section>
+            <LocaleContext.Consumer>
+                {
+                    ({ locale }) => (
+                        <section className="search-bar">
+                            <input type="text" placeholder={ content[locale].searchBar.placeholder } onChange={this.onKeywordChange} value={this.state.keyword} />
+                        </section>
+                    )
+                }
+            </LocaleContext.Consumer>
         );
     }
 }
